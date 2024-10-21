@@ -1,6 +1,6 @@
 import os
 from argparse import ArgumentParser
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 from telegram.ext import ContextTypes
 from main import song_cover_pipeline  # Keeping this import from your original main.py
@@ -14,41 +14,53 @@ os.makedirs(output_dir, exist_ok=True)
 
 # Start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [
-        [InlineKeyboardButton("Generate Song", callback_data='generate')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text('Welcome to AI Cover Generator! Choose an action:', reply_markup=reply_markup)
-
-# Button handler
-async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-
-    if query.data == 'generate':
-        await query.edit_message_text(text="Please send the YouTube link to generate a song.")
+    await update.message.reply_text('Welcome to AI Cover Generator! Please send the YouTube link to generate a song.')
 
 # Generate song handler
 async def generate_song(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Assuming the user sends a YouTube link
-    song_input = update.message.text
-    model_name = "default_model"  # You can change this to select a different model
-    pitch = 0
-    keep_files = False
-    is_webui = False
+    user_input = update.message.text
 
-    # Call the song_cover_pipeline function (from main.py)
-    song_output = song_cover_pipeline(song_input, model_name, pitch, keep_files, is_webui)
-    
-    # Assuming song_cover_pipeline returns the path to the output file
-    if os.path.exists(song_output):
-        # Send the generated song as audio
-        await update.message.reply_audio(audio=open(song_output, 'rb'))
-        
-        # Optionally, delete the output file after sending
-        os.remove(song_output)
+    # Check if the user is providing a YouTube link
+    if user_input.startswith("http") or user_input.startswith("www"):
+        context.user_data['song_input'] = user_input
+        await update.message.reply_text('Please provide the model name you want to use.')
     else:
-        await update.message.reply_text(f"An error occurred while generating the song.")
+        # Handle invalid link
+        await update.message.reply_text('Please provide a valid YouTube link.')
+
+# Get model name handler
+async def get_model_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    model_name = update.message.text
+    context.user_data['model_name'] = model_name
+    await update.message.reply_text('Please provide the pitch value (e.g., -3, 0, 3).')
+
+# Get pitch handler
+async def get_pitch(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        pitch = float(update.message.text)
+        context.user_data['pitch'] = pitch
+
+        # Start the song generation process
+        song_input = context.user_data.get('song_input')
+        model_name = context.user_data.get('model_name', 'default_model')  # Default model if not provided
+        keep_files = False
+        is_webui = False
+
+        # Call the song_cover_pipeline function (from main.py)
+        song_output = song_cover_pipeline(song_input, model_name, pitch, keep_files, is_webui)
+
+        # Assuming song_cover_pipeline returns the path to the output file
+        if os.path.exists(song_output):
+            # Send the generated song as audio
+            await update.message.reply_audio(audio=open(song_output, 'rb'))
+            
+            # Optionally, delete the output file after sending
+            os.remove(song_output)
+        else:
+            await update.message.reply_text(f"An error occurred while generating the song.")
+
+    except ValueError:
+        await update.message.reply_text('Please provide a valid numeric pitch value.')
 
 # Main function to run the bot
 def main():
@@ -60,8 +72,9 @@ def main():
 
     # Handlers
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(CallbackQueryHandler(button))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, generate_song))  # Generate song on text input
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, get_model_name))  # Get model name
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, get_pitch))  # Get pitch
 
     # Run the bot
     application.run_polling()
