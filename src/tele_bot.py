@@ -2,13 +2,10 @@ import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from main import song_cover_pipeline  # Keeping this import from your original main.py
-from webui import download_online_model  # Import your download function
-from argparse import ArgumentParser
-
+from download_model import download_online_model  # Import your download function
 
 # Define paths
-BASE_DIR = "/content/HRVC"
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 output_dir = os.path.join(BASE_DIR, 'song_output')
 
 # Ensure the output directory exists
@@ -66,6 +63,8 @@ async def download_model(update: Update, context: ContextTypes.DEFAULT_TYPE):
     model_input = update.message.text
     try:
         url, model_name = model_input.split()
+        # Debugging: Print the URL and model name received
+        print(f"URL: {url}, Model Name: {model_name}")
     except ValueError:
         await update.message.reply_text("Please send a valid input in the format '<url> <model_name>' (e.g., 'https://example.com/model.zip my_model').")
         return DOWNLOAD_MODEL  # Stay in the same state
