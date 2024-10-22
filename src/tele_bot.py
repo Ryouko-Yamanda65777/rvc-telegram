@@ -1,5 +1,3 @@
-
-
 import os
 from argparse import ArgumentParser
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -34,8 +32,8 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def generate_song(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Assuming the user sends a YouTube link
     song_input = update.message.text
-    model_name = os.getenv('rvc_models') # You can change this to select a different model
-    pitch = os.getenv('pitch_rvc')
+    model_name = "default_model"  # You can change this to select a different model
+    pitch = 0
     keep_files = False
     is_webui = False
 
@@ -70,4 +68,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
