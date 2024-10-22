@@ -39,7 +39,7 @@ To run the Telegram bot, execute the following:
 python src/tele_bot.py 
 ```
 
-then click this link [t.me/rvcconverbot](t.me/rvcconverbot) and you're done ;)
+then click this link [https://t.me/rvcconverbot](https://t.me/rvcconverbot) and you're done ;)
 
 ## todo
 - [ ] drive mounth for colab backups
