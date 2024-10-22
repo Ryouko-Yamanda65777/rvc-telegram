@@ -1,6 +1,6 @@
+import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes, ConversationHandler
-import os
 from main import song_cover_pipeline  # Keeping this import from your original main.py
 from download_model import download_online_model  # Import your download function
 from argparse import ArgumentParser
@@ -29,7 +29,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Button handler
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    await query.answer()
+    await query.answer()  # Acknowledge the callback query
 
     if query.data == 'generate':
         await query.edit_message_text(text="Please send the model name, YouTube link, and pitch (e.g., '<model_name> <link> <pitch>').")
@@ -104,6 +104,7 @@ def main():
 
     # Add the conversation handler to the application
     application.add_handler(conv_handler)
+    application.add_handler(CallbackQueryHandler(button))  # Add this handler for button interactions
 
     # Run the bot
     application.run_polling()
