@@ -1,4 +1,4 @@
-   main()
+
 import os
 from argparse import ArgumentParser
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
