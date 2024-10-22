@@ -4,6 +4,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 from telegram.ext import ContextTypes
 from main import song_cover_pipeline  # Keeping this import from your original main.py
+from download_model import download_online_model  # Import your download function
 
 # Define paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -15,7 +16,8 @@ os.makedirs(output_dir, exist_ok=True)
 # Start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("Generate Song", callback_data='generate')]
+        [InlineKeyboardButton("Generate Song", callback_data='generate')],
+        [InlineKeyboardButton("Download RVC Model", callback_data='download_model')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text('Welcome to AI Cover Generator! Choose an action:', reply_markup=reply_markup)
@@ -27,32 +29,44 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if query.data == 'generate':
         await query.edit_message_text(text="Please send the model name, YouTube link, and pitch (e.g., '<model_name> <link> <pitch>').")
+    elif query.data == 'download_model':
+        await query.edit_message_text(text="Please send the model URL and name (e.g., '<url> <model_name>').")
+
+# Download model handler
+async def download_model(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    model_input = update.message.text
+    try:
+        # Split the message into URL and directory name
+        url, model_name = model_input.split()
+    except ValueError:
+        # Handle error if input is not correctly formatted
+        await update.message.reply_text("Please send a valid input in the format '<url> <model_name>' (e.g., 'https://example.com/model.zip my_model').")
+        return
+
+    try:
+        # Call the download_online_model function to download the model
+        download_online_model(url, model_name)
+        await update.message.reply_text(f"Model '{model_name}' downloaded successfully.")
+    except Exception as e:
+        await update.message.reply_text(f"Error downloading the model: {e}")
 
 # Generate song handler
 async def generate_song(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Assuming the user sends model_name, YouTube link, and pitch
     song_input = update.message.text
     try:
-        # Split the message into model_name, link, and pitch
         model_name, song_link, pitch_str = song_input.split()
-        pitch = int(pitch_str)  # Convert pitch to integer
+        pitch = int(pitch_str)
     except ValueError:
-        # Handle error if input is not correctly formatted
         await update.message.reply_text(f"Please send a valid input in the format '<model_name> <link> <pitch>' (e.g., 'model1 https://youtube.com/abc 2').")
         return
 
     keep_files = False
     is_webui = False
 
-    # Call the song_cover_pipeline function (from main.py)
     song_output = song_cover_pipeline(song_link, model_name, pitch, keep_files, is_webui)
     
-    # Assuming song_cover_pipeline returns the path to the output file
     if os.path.exists(song_output):
-        # Send the generated song as audio
         await update.message.reply_audio(audio=open(song_output, 'rb'))
-        
-        # Optionally, delete the output file after sending
         os.remove(song_output)
     else:
         await update.message.reply_text(f"An error occurred while generating the song.")
@@ -68,9 +82,9 @@ def main():
     # Handlers
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CallbackQueryHandler(button))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, generate_song))  # Generate song on text input
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, generate_song))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, download_model))  # Handle model download
 
-    # Run the bot
     application.run_polling()
 
 if __name__ == '__main__':
