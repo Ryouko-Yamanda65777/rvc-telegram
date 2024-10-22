@@ -52,3 +52,6 @@ python src/tele_bot.py --token <your_bot_token>
 
 This project is licensed under the [MIT License](LICENSE).
 
+
+
+(nodejs sucks for this project)
