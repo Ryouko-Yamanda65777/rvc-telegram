@@ -59,11 +59,8 @@ async def generate_song(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Main function to run the bot
 def main():
-    parser = ArgumentParser(description='Telegram Bot for AI Cover Generation')
-    parser.add_argument('--token', type=str, help='Telegram bot token')
-    args = parser.parse_args()
 
-    application = Application.builder().token(args.token).build()
+    application = Application.builder().token("7360013787:AAFjVrKRPa6nkune4N6JPlO14DTqqySJD_Y").build()
 
     # Handlers
     application.add_handler(CommandHandler("start", start))
