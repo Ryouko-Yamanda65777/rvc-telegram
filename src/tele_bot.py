@@ -92,7 +92,7 @@ def main():
 
     application = Application.builder().token(args.token).build()
 
-    # Conversation handler with states
+    # Define conversation handler
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start)],
         states={
