@@ -23,7 +23,7 @@
 To download an RVC model, use the following command:
 
 ```bash
-python src/download_rvcmodels.py <model_url> <directory_name>
+python src/download_model.py <model_url> <directory_name>
 ```
 
 - `<model_url>`: The URL of the RVC model you want to download.
