@@ -41,6 +41,13 @@ python src/tele_bot.py --token <your_bot_token>
 
 - Replace `<your_bot_token>` with the actual token you received from BotFather.
 
+
+## todo
+[x] drive mounth for colab backups
+
+
+
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
