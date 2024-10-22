@@ -5,7 +5,7 @@ import urllib.request
 import zipfile
 from argparse import ArgumentParser
 
-BASE_DIR = "/content/HRVC"
+BASE_DIR = Path(__file__).resolve().parent.parent
 mdxnet_models_dir = os.path.join(BASE_DIR, 'mdxnet_models')
 rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 output_dir = os.path.join(BASE_DIR, 'song_output')
