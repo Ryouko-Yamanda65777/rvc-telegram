@@ -14,7 +14,9 @@ API_TOKEN='7360013787:AAFjVrKRPa6nkune4N6JPlO14DTqqySJD_Y'
 # Initialize the bot
 bot = telebot.TeleBot(API_TOKEN)
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = "/content/HRVC"
+
+
 rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 
 def get_current_models(models_dir):
