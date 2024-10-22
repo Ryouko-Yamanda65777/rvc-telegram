@@ -6,7 +6,7 @@ import telebot
 from telebot import types
 
 # Retrieve the API token from environment variable
-API_TOKEN = 'YOUR_TELEGRAM_BOT_API_TOKEN'  # Replace with your actual token
+API_TOKEN = '7360013787:AAFjVrKRPa6nkune4N6JPlO14DTqqySJD_Y'  # Replace with your actual token
 
 # Initialize the bot
 bot = telebot.TeleBot(API_TOKEN)
