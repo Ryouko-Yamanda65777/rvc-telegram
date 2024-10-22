@@ -1,3 +1,4 @@
+   main()
 import os
 from argparse import ArgumentParser
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -26,19 +27,27 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     if query.data == 'generate':
-        await query.edit_message_text(text="Please send the YouTube link to generate a song.")
+        await query.edit_message_text(text="Please send the YouTube link followed by the desired pitch (e.g., '<link> <pitch>').")
 
 # Generate song handler
 async def generate_song(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Assuming the user sends a YouTube link
+    # Assuming the user sends a YouTube link and pitch
     song_input = update.message.text
+    try:
+        # Split the message into link and pitch
+        song_link, pitch_str = song_input.split()
+        pitch = int(pitch_str)  # Convert pitch to integer
+    except ValueError:
+        # Handle error if input is not correctly formatted
+        await update.message.reply_text(f"Please send a valid input in the format '<link> <pitch>' (e.g., 'https://youtube.com/abc 2').")
+        return
+
     model_name = "default_model"  # You can change this to select a different model
-    pitch = 0
     keep_files = False
     is_webui = False
 
     # Call the song_cover_pipeline function (from main.py)
-    song_output = song_cover_pipeline(song_input, model_name, pitch, keep_files, is_webui)
+    song_output = song_cover_pipeline(song_link, model_name, pitch, keep_files, is_webui)
     
     # Assuming song_cover_pipeline returns the path to the output file
     if os.path.exists(song_output):
