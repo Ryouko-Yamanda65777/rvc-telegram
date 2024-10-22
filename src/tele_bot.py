@@ -4,7 +4,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 from telegram.ext import ContextTypes
 from main import song_cover_pipeline  # Keeping this import from your original main.py
-from download_model import download_online_model  # Import your download function
+from download_rvcmodels import download_online_model  # Import your download function
 
 # Define paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
