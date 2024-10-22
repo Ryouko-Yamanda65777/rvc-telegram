@@ -36,11 +36,10 @@ Before running the bot, make sure you have a valid Telegram bot token. You can o
 To run the Telegram bot, execute the following:
 
 ```bash
-python src/tele_bot.py --token <your_bot_token>
+python src/tele_bot.py 
 ```
 
-- Replace `<your_bot_token>` with the actual token you received from BotFather.
-
+then click this link t.me/rvcconverbot and you're done ;)
 
 ## todo
 - [ ] drive mounth for colab backups
