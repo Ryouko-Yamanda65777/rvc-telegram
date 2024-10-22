@@ -7,7 +7,7 @@ from main import song_cover_pipeline  # Keeping this import from your original m
 from download_rvcmodels import download_online_model  # Import your download function
 
 # Define paths
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = "/content/HRVC"
 output_dir = os.path.join(BASE_DIR, 'song_output')
 
 # Ensure the output directory exists
