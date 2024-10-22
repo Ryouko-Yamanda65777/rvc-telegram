@@ -4,7 +4,7 @@ import shutil
 import urllib.request
 import zipfile
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
 
 # Your existing imports and functions here (get_current_models, download_online_model, etc.)
 
@@ -15,9 +15,9 @@ rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 output_dir = os.path.join(BASE_DIR, 'song_output')
 
 # Telegram Bot Configuration
-TOKEN = '7360013787:AAFjVrKRPa6nkune4N6JPlO14DTqqySJD_Y'
+TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'
 
-def start(update: Update, context: CallbackContext) -> None:
+async def start(update: Update, context) -> None:
     keyboard = [
         [
             InlineKeyboardButton("Generate", callback_data='generate'),
@@ -25,56 +25,53 @@ def start(update: Update, context: CallbackContext) -> None:
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Welcome! Please choose an option:', reply_markup=reply_markup)
+    await update.message.reply_text('Welcome! Please choose an option:', reply_markup=reply_markup)
 
-def button(update: Update, context: CallbackContext) -> None:
+async def button(update: Update, context) -> None:
     query = update.callback_query
-    query.answer()
+    await query.answer()
 
     if query.data == 'generate':
-        query.edit_message_text(text="Please send your song input (comma-separated):")
+        await query.edit_message_text(text="Please send your song input (comma-separated):")
         return  # Wait for song input
 
     elif query.data == 'download':
-        query.edit_message_text(text="Please send the download link and model name (comma-separated):")
+        await query.edit_message_text(text="Please send the download link and model name (comma-separated):")
         return  # Wait for download input
 
-def handle_message(update: Update, context: CallbackContext) -> None:
+async def handle_message(update: Update, context) -> None:
     user_input = update.message.text
 
     if ',' in user_input:
         parts = [part.strip() for part in user_input.split(',')]
         
         if len(parts) == 2:  # Handle both generate and download
-            if update.message.reply_to_message.text.startswith("Please send your song input"):
+            if update.message.reply_to_message and update.message.reply_to_message.text.startswith("Please send your song input"):
                 song_input = parts[0]
                 # Call your song_cover_pipeline function here with song_input
                 # Example: result = song_cover_pipeline(song_input, ...)
-                update.message.reply_text(f"Song generated for input: {song_input}")
-            elif update.message.reply_to_message.text.startswith("Please send the download link"):
+                await update.message.reply_text(f"Song generated for input: {song_input}")
+            elif update.message.reply_to_message and update.message.reply_to_message.text.startswith("Please send the download link"):
                 model_zip_link = parts[0]
                 model_name = parts[1]
                 try:
                     message = download_online_model(model_zip_link, model_name)
-                    update.message.reply_text(message)
+                    await update.message.reply_text(message)
                 except Exception as e:
-                    update.message.reply_text(f"Error: {str(e)}")
+                    await update.message.reply_text(f"Error: {str(e)}")
         else:
-            update.message.reply_text("Please provide exactly two inputs separated by a comma.")
+            await update.message.reply_text("Please provide exactly two inputs separated by a comma.")
     else:
-        update.message.reply_text("Invalid input format. Please provide inputs separated by a comma.")
+        await update.message.reply_text("Invalid input format. Please provide inputs separated by a comma.")
 
 def main() -> None:
-    updater = Updater(TOKEN)
+    application = Application.builder().token(TOKEN).build()
 
-    dispatcher = updater.dispatcher
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CallbackQueryHandler(button))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CallbackQueryHandler(button))
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
-
-    updater.start_polling()
-    updater.idle()
+    application.run_polling()
 
 if __name__ == '__main__':
     main()
