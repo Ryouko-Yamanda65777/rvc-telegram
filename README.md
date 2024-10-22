@@ -43,7 +43,7 @@ python src/tele_bot.py --token <your_bot_token>
 
 
 ## todo
-- [] drive mounth for colab backups
+- [ ] drive mounth for colab backups
 
 
 
