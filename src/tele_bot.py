@@ -18,7 +18,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("Generate Song", callback_data='generate')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text('Welcome to AI Cover Generator! Choose an action:', reply_markup=reply_markup)
+    await update.message.reply_text('Welcome to AICoverGen! click generate to dtart ineference:', reply_markup=reply_markup)
 
 # Button handler
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -38,7 +38,7 @@ async def generate_song(update: Update, context: ContextTypes.DEFAULT_TYPE):
         pitch = int(pitch_str)  # Convert pitch to integer
     except ValueError:
         # Handle error if input is not correctly formatted
-        await update.message.reply_text(f"Please send a valid input in the format '<model_name> <link> <pitch>' (e.g., 'model1 https://youtube.com/abc 2').")
+        await update.message.reply_text(f"Please send a valid input in the format '<model_name> <link> <pitch>' (e.g., 'model1 https://youtube.com/abc 2').\n note: pitch 1 for female and pitch -1 for male")
         return
 
     keep_files = False
