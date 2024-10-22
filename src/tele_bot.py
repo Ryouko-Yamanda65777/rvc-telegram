@@ -72,9 +72,10 @@ def main():
 
     # Handlers
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, generate_song))  # Generate song on text input
+    
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, get_model_name))  # Get model name
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, get_pitch))  # Get pitch
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, generate_song))  # Generate song on text input
 
     # Run the bot
     application.run_polling()
