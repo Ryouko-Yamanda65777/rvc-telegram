@@ -31,7 +31,7 @@ python src/download_model.py <model_url> <directory_name>
 
 ### 2. Running the Telegram Bot
 
-Before running the bot, make sure you have a valid Telegram bot token. You can obtain this from [BotFather](https://core.telegram.org/bots#botfather).
+
 
 To run the Telegram bot, execute the following:
 
@@ -39,7 +39,7 @@ To run the Telegram bot, execute the following:
 python src/tele_bot.py 
 ```
 
-then click this link t.me/rvcconverbot and you're done ;)
+then click this link [t.me/rvcconverbot](t.me/rvcconverbot) and you're done ;)
 
 ## todo
 - [ ] drive mounth for colab backups
