@@ -15,7 +15,7 @@ rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 output_dir = os.path.join(BASE_DIR, 'song_output')
 
 # Telegram Bot Configuration
-TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'
+TOKEN = '7360013787:AAFjVrKRPa6nkune4N6JPlO14DTqqySJD_Y'
 
 async def start(update: Update, context) -> None:
     keyboard = [
