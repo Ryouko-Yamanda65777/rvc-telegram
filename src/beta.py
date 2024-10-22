@@ -6,17 +6,12 @@ import telebot
 from telebot import types
 
 # Retrieve the API token from environment variable
-
-API_TOKEN='7360013787:AAFjVrKRPa6nkune4N6JPlO14DTqqySJD_Y'
-
-
+API_TOKEN = 'YOUR_TELEGRAM_BOT_API_TOKEN'  # Replace with your actual token
 
 # Initialize the bot
 bot = telebot.TeleBot(API_TOKEN)
 
 BASE_DIR = "/content/HRVC"
-
-
 rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 
 def get_current_models(models_dir):
@@ -46,12 +41,13 @@ def handle_model_selection(message):
     bot.send_message(message.chat.id, f"You selected: {selected_model}\nSend me a song input (YouTube link or local file path).")
     
     # Store the selected model for later use (in a global or user-specific context)
+    bot.user_data = getattr(bot, 'user_data', {})  # Initialize user_data if it doesn't exist
     bot.user_data[message.from_user.id] = {'model': selected_model}
 
 @bot.message_handler(content_types=['text'])
 def handle_song_input(message):
     # Retrieve the selected model from user_data
-    user_data = bot.user_data.get(message.from_user.id)
+    user_data = getattr(bot, 'user_data', {}).get(message.from_user.id)
     if not user_data or 'model' not in user_data:
         bot.send_message(message.chat.id, "Please select a model first using /generate.")
         return
@@ -84,9 +80,9 @@ def handle_download_link(message):
     bot.reply_to(message, f"Model downloaded and extracted to: {dir_name}.")
 
 # To handle errors
-@bot.error_handler
-def handle_errors(error):
-    bot.send_message(error.chat.id, "An error occurred. Please try again.")
+@bot.message_handler(func=lambda message: True)
+def handle_errors(message):
+    bot.send_message(message.chat.id, "An error occurred. Please try again.")
 
 if __name__ == '__main__':
     bot.polling()
