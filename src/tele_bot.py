@@ -1,4 +1,3 @@
-
 import os
 from argparse import ArgumentParser
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -27,22 +26,21 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     if query.data == 'generate':
-        await query.edit_message_text(text="Please send the YouTube link followed by the desired pitch (e.g., '<link> <pitch>').")
+        await query.edit_message_text(text="Please send the model name, YouTube link, and pitch (e.g., '<model_name> <link> <pitch>').")
 
 # Generate song handler
 async def generate_song(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Assuming the user sends a YouTube link and pitch
+    # Assuming the user sends model_name, YouTube link, and pitch
     song_input = update.message.text
     try:
-        # Split the message into link and pitch
-        song_link, pitch_str = song_input.split()
+        # Split the message into model_name, link, and pitch
+        model_name, song_link, pitch_str = song_input.split()
         pitch = int(pitch_str)  # Convert pitch to integer
     except ValueError:
         # Handle error if input is not correctly formatted
-        await update.message.reply_text(f"Please send a valid input in the format '<link> <pitch>' (e.g., 'https://youtube.com/abc 2').")
+        await update.message.reply_text(f"Please send a valid input in the format '<model_name> <link> <pitch>' (e.g., 'model1 https://youtube.com/abc 2').")
         return
 
-    model_name = "default_model"  # You can change this to select a different model
     keep_files = False
     is_webui = False
 
