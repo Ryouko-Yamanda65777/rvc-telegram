@@ -4,8 +4,13 @@ from telegram.ext import Application, CommandHandler, CallbackQueryHandler, Mess
 from main import song_cover_pipeline  # Keeping this import from your original main.py
 from download_model import download_online_model  # Import your download function
 
+from argparse import ArgumentParser
+
+
 # Define paths
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = "/content/HRVC"
+
+
 output_dir = os.path.join(BASE_DIR, 'song_output')
 
 # Ensure the output directory exists
