@@ -26,7 +26,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     if query.data == 'generate':
-        await query.edit_message_text(text="Please send the model name, YouTube link, and pitch (e.g., '<model_name> <link> <pitch>').")
+        await query.edit_message_text(text="Please send the model name, YouTube link, and pitch (e.g., '<model_name> <link> <pitch>')\n note: pitch 1 for female and pitch -1 for male.")
 
 # Generate song handler
 async def generate_song(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -38,7 +38,7 @@ async def generate_song(update: Update, context: ContextTypes.DEFAULT_TYPE):
         pitch = int(pitch_str)  # Convert pitch to integer
     except ValueError:
         # Handle error if input is not correctly formatted
-        await update.message.reply_text(f"Please send a valid input in the format '<model_name> <link> <pitch>' (e.g., 'model1 https://youtube.com/abc 2').\n note: pitch 1 for female and pitch -1 for male")
+        await update.message.reply_text(f"Please send a valid input in the format '<model_name> <link> <pitch>' (e.g., 'model1 https://youtube.com/abc 2').")
         return
 
     keep_files = False
