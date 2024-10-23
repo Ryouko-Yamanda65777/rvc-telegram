@@ -45,7 +45,9 @@ then click this link [https://t.me/rvcconverbot](https://t.me/rvcconverbot) and 
 - [ ] drive mounth for colab backups
 
 
+## special thing
 
+your output will saved in chats 
 
 ## License
 
