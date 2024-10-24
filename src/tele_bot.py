@@ -6,6 +6,8 @@ from telegram.ext import ContextTypes
 from main import song_cover_pipeline  # Keeping this import from your original main.py
 from webui import download_online_model  # Import the download function
 
+TELEGRAM_BOT_TOKEN="7360013787:AAFjVrKRPa6nkune4N6JPlO14DTqqySJD_Y "
+
 # Define paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 output_dir = os.path.join(BASE_DIR, 'song_output')
@@ -92,7 +94,7 @@ async def download_model(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Main function to run the bot
 def main():
     # Fetch the bot token from environment variables
-    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+    bot_token = TELEGRAM_BOT_TOKEN
 
     if not bot_token:
         raise ValueError("Bot token not found. Set the TELEGRAM_BOT_TOKEN environment variable.")
