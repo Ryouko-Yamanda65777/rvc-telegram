@@ -18,6 +18,11 @@
 
 ## How to Use
 
+
+## note! 
+
+if you want use ur own telegram api edit in src/tele_bot.py TELEGRAM_BOT_TOKEN
+
 ### 1. Download RVC Models
 
 To download an RVC model, use the following command:
@@ -53,6 +58,7 @@ your output will saved in chats
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
 
 
 
