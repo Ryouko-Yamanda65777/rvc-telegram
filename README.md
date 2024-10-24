@@ -44,7 +44,7 @@ then click this link [https://t.me/rvcconverbot](https://t.me/rvcconverbot) and 
 ## todo
 - [ ] drive mounth for colab backups
 
-- [ x ] full telegram inference
+- [x] full telegram inference
 
 ## special thing
 
