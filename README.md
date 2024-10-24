@@ -23,18 +23,9 @@
 
 if you want use ur own telegram api edit in src/tele_bot.py TELEGRAM_BOT_TOKEN
 
-### 1. Download RVC Models
 
-To download an RVC model, use the following command:
 
-```bash
-python src/download_model.py <model_url> <directory_name>
-```
-
-- `<model_url>`: The URL of the RVC model you want to download.
-- `<directory_name>`: The name of the directory where the model will be saved.
-
-### 2. Running the Telegram Bot
+### Running the Telegram Bot
 
 
 
