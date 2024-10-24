@@ -1,13 +1,16 @@
+
+TELEGRAM_BOT_TOKEN="7360013787:AAFjVrKRPa6nkune4N6JPlO14DTqqySJD_Y"
+
+
+
 import os
-from argparse import ArgumentParser
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 from telegram.ext import ContextTypes
 from main import song_cover_pipeline  # Keeping this import from your original main.py
 from webui import download_online_model  # Import the download function
 
-TELEGRAM_BOT_TOKEN="7360013787:AAFjVrKRPa6nkune4N6JPlO14DTqqySJD_Y"
-
+TELEGRAM_BOT_TOKEN = "your-telegram-bot-token-here"
 
 # Define paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -31,10 +34,15 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
+    # Determine which option was selected
     if query.data == 'generate':
+        # Store the user state as 'generate'
+        context.user_data['mode'] = 'generate'
         await query.edit_message_text(text="Please send the model name, YouTube link, and pitch (e.g., '<model_name> <link> <pitch>')\nNote: pitch 1 for female and pitch -1 for male.")
     
     elif query.data == 'download_model':
+        # Store the user state as 'download_model'
+        context.user_data['mode'] = 'download_model'
         await query.edit_message_text(text="Please send the model name and URL in the format '<model_name> <url>'.")
 
     elif query.data == 'help':
@@ -49,6 +57,21 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "2. Send a message in the format '<model_name> <url>' to specify the model name and the download URL."
         )
         await query.edit_message_text(text=help_text)
+
+# Message handler
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Check which mode the user is in based on previous button choice
+    mode = context.user_data.get('mode')
+
+    if mode == 'generate':
+        # Process song generation input
+        await generate_song(update, context)
+    elif mode == 'download_model':
+        # Process model download input
+        await download_model(update, context)
+    else:
+        # If no mode is selected, ask the user to choose an option
+        await update.message.reply_text("Please choose an option first by clicking 'Generate Song' or 'Download Model'.")
 
 # Generate song handler
 async def generate_song(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -104,12 +127,10 @@ def main():
     # Handlers
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CallbackQueryHandler(button))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, generate_song))  # Generate song on text input
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, download_model))  # Download model on text input
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))  # Unified message handler
 
     # Run the bot
     application.run_polling()
 
 if __name__ == '__main__':
     main()
-
