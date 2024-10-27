@@ -69,6 +69,8 @@ def extract_zip(extraction_folder, zip_name):
 
 def download_online_model(url, dir_name, progress=gr.Progress()):
     try:
+        print(f'[~] Downloading voice model with name {dir_name}...')
+       
         progress(0, desc=f'[~] Downloading voice model with name {dir_name}...')
         zip_name = url.split('/')[-1]
         extraction_folder = os.path.join(rvc_models_dir, dir_name)
@@ -80,6 +82,8 @@ def download_online_model(url, dir_name, progress=gr.Progress()):
 
         urllib.request.urlretrieve(url, zip_name)
 
+        print('[~] Extracting zip...')
+       
         progress(0.5, desc='[~] Extracting zip...')
         extract_zip(extraction_folder, zip_name)
         return f'[+] {dir_name} Model successfully downloaded!'
