@@ -200,6 +200,7 @@ def voice_change(voice_model, vocals_path, output_path, pitch_change, f0_method,
     # convert main vocals
     rvc_infer(rvc_index_path, index_rate, vocals_path, output_path, pitch_change, f0_method, cpt, version, net_g, filter_radius, tgt_sr, rms_mix_rate, protect, crepe_hop_length, vc, hubert_model)
     print(config)
+    print("-----------------------------")
     print(rvc_infer)
     del hubert_model, cpt
     gc.collect()
@@ -252,9 +253,9 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
         # if youtube url
         if urlparse(song_input).scheme == 'https':
             input_type = 'yt'
-            song_id = get_youtube_video_id(song_input)
+            song_id = yt_download(song_input)
             if song_id is None:
-                error_msg = 'Invalid YouTube url.'
+                error_msg = 'Invalid url.'
                 raise_exception(error_msg, is_webui)
 
         # local audio file
